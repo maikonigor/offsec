@@ -1,5 +1,3 @@
-Claro! Aqui está um modelo de `README.md` para o seu repositório no GitHub. Ele pode ser personalizado conforme você adicionar mais scripts e informações ao longo do seu processo de aprendizagem.
-
 ---
 
 # **Scripts de Ethical Hacking**
@@ -168,5 +166,3 @@ Se você tiver sugestões, melhorias ou novos scripts para adicionar, fique à v
 Este repositório está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para mais detalhes.
 
 ---
-
-Esse `README.md` fornece um guia claro sobre como usar os scripts e prepara seu repositório para futuras melhorias e contribuições. Se você adicionar mais scripts ou funcionalidades, é só atualizar o arquivo conforme necessário.
