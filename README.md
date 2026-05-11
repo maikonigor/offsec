@@ -6,11 +6,6 @@ Este repositório contém diversos scripts que fazem parte do meu processo de ap
 
 Os scripts são projetados para facilitar a execução de tarefas durante testes de penetração (pentests) e outras atividades relacionadas à segurança cibernética.
 
-Aqui está um `README.md` organizado para o repositório:
-
-````markdown
-# Bug Bounty Automation
-
 Scripts para automação de recon DNS e varredura de vulnerabilidades utilizando ferramentas da stack ProjectDiscovery.
 
 ## Estrutura
