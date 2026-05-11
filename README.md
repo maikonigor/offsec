@@ -1,5 +1,3 @@
----
-
 # Scripts de Ethical Hacking
 
 Este repositório contém diversos scripts que fazem parte do meu processo de aprendizagem de **Ethical Hacking**. O foco é automatizar tarefas comuns de segurança, como varredura de subdomínios, mapeamento de URLs, filtragem e análise de padrões.
@@ -16,8 +14,6 @@ bugbounty/
 ├── vulnscan.sh
 └── README.md
 ```
-
----
 
 # Recon DNS
 
