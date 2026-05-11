@@ -6,148 +6,186 @@ Este repositório contém diversos scripts que fazem parte do meu processo de ap
 
 Os scripts são projetados para facilitar a execução de tarefas durante testes de penetração (pentests) e outras atividades relacionadas à segurança cibernética.
 
----
+Aqui está um `README.md` organizado para o repositório:
 
-## **Índice**
+````markdown
+# Bug Bounty Automation
 
-* [Subdomain Scan](#subdomain-scan)
-* [URL Scan com GF Patterns](#url-scan-com-gf-patterns)
-* [Como usar](#como-usar)
-* [Pré-requisitos](#pré-requisitos)
-* [Instalação](#instalação)
-* [Contribuição](#contribuição)
-* [Licença](#licença)
+Scripts para automação de recon DNS e varredura de vulnerabilidades utilizando ferramentas da stack ProjectDiscovery.
 
----
+## Estrutura
 
-## **Subdomain Scan**
-
-O script `subdomain-scan.sh` permite realizar a enumeração de subdomínios para um domínio específico usando a ferramenta **Amass**. Além disso, é possível mapear as URLs de cada subdomínio usando a ferramenta **Gau**.
-
-**Funcionalidades**:
-
-* Realiza a enumeração de subdomínios.
-* Mapeia as URLs usando o `gau`.
-* Suporta a exibição de resultados em modo verbose.
-* Permite salvar os resultados em diretórios específicos.
-
-### **Exemplo de uso**:
-
-```bash
-./subdomain-scan.sh -url fabianovasconcelos.com -dir ~/test-scan -v
+```text
+bugbounty/
+├── recon.sh
+├── vulnscan.sh
+└── README.md
 ```
 
 ---
 
-## **URL Scan com GF Patterns**
+# Recon DNS
 
-O script `url-scan.sh` permite escanear uma URL (ou uma lista de URLs de um arquivo) utilizando **patterns** do `GF`. Ele encontra URLs candidatas e as salva em um diretório específico, com a possibilidade de exibir os resultados em modo **verbose**.
+Script responsável por:
 
-**Funcionalidades**:
+- Enumerar subdomínios usando `subfinder`
+- Executar brute force DNS com `shuffleDNS` (opcional)
+- Salvar resultados organizados por domínio
 
-* Escaneia URLs ou arquivos de URLs usando os padrões do `gf`.
-* Exibe as URLs candidatas encontradas.
-* Salva os resultados em arquivos com base no padrão de busca.
-* Permite o modo **verbose** para acompanhamento do progresso.
+## Ferramentas utilizadas
 
-### **Exemplo de uso**:
+- subfinder
+- shuffledns
+- anew
+- GNU parallel
 
-```bash
-./url-scan.sh -url 'https://example.com/index.php?page=login'
+## Estrutura esperada
+
+```text
+/home/kali/bugbounty/
+└── company/
+    └── domains.txt
 ```
 
+Exemplo de `domains.txt`:
+
+```text
+example.com
+test.com
+```
+
+## Uso
+
+### Apenas enumeração passiva
+
 ```bash
-./url-scan.sh -f /path/to/urls.txt -v
+./recon.sh
+```
+
+### Enumeração + brute force DNS
+
+```bash
+./recon.sh --brute
+```
+
+## Output
+
+```text
+company/
+└── domains/
+    └── example.com/
+        ├── subs.txt
+        └── brute_dns.txt
 ```
 
 ---
 
-## **Como usar**
+# Vulnerability Scan
 
-1. **Clone o repositório**:
-   Clone o repositório em sua máquina local:
+Script responsável por:
 
-   ```bash
-   git clone https://github.com/seu-usuario/seu-repositorio.git
-   ```
+- Buscar todos os arquivos `subs.txt`
+- Executar templates high/critical do nuclei
+- Salvar findings por domínio
+- Enviar notificações usando `notify`
 
-2. **Dê permissão de execução**:
-   Torne os scripts executáveis:
+## Ferramentas utilizadas
 
-   ```bash
-   chmod +x subdomain-scan.sh url-scan.sh
-   ```
+- nuclei
+- anew
+- notify
+- GNU parallel
 
-3. **Execute os scripts**:
-   Agora, você pode usar os scripts para realizar a enumeração de subdomínios e escanear URLs.
+## Uso
 
-   Exemplo para escanear subdomínios e mapear URLs:
+```bash
+./vulnscan.sh
+```
 
-   ```bash
-   ./subdomain-scan.sh -url exemplo.com -dir /caminho/para/diretorio -v
-   ```
+## Output
 
-   Exemplo para escanear uma URL ou arquivo com o `gf`:
-
-   ```bash
-   ./url-scan.sh -url 'https://example.com/index.php?page=login'
-   ```
-
----
-
-## **Pré-requisitos**
-
-Os scripts dependem de algumas ferramentas que precisam ser instaladas previamente:
-
-* **Amass**: Para enumeração de subdomínios.
-* **Gau**: Para mapear URLs de subdomínios.
-* **GF**: Para filtrar URLs com padrões.
-
-Instale as ferramentas mencionadas antes de usar os scripts.
+```text
+company/
+└── domains/
+    └── example.com/
+        ├── subs.txt
+        └── nuclei_out.txt
+```
 
 ---
 
-## **Instalação**
+# Dependências
 
-### **Amass**
+## Instalação das ferramentas
 
-1. **Instalação no Linux**:
+### ProjectDiscovery
 
-   ```bash
-   sudo apt install amass
-   ```
+```bash
+go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
 
-2. **Verificação**:
+go install -v github.com/projectdiscovery/shuffledns/cmd/shuffledns@latest
 
-   ```bash
-   amass -version
-   ```
+go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
 
----
+go install -v github.com/projectdiscovery/notify/cmd/notify@latest
+```
 
-### **Gau**
+### Anew
 
-1. **Instalação no Linux**:
+```bash
+go install -v github.com/tomnomnom/anew@latest
+```
 
-   ```bash
-   go install github.com/lc/gau/v2/cmd/gau@latest
-   ```
+### GNU Parallel
 
-2. **Verificação**:
-
-   ```bash
-   gau --version
-   ```
+```bash
+sudo apt install parallel
+```
 
 ---
 
-### **GF**
+# Wordlists
 
-1. **Instalação**:
+O brute force DNS utiliza:
 
-   Siga as instruções no repositório oficial: [https://github.com/tomnomnom/gf](https://github.com/tomnomnom/gf)
+```text
+/usr/share/wordlists/SecLists/Discovery/DNS/dns-Jhaddix.txt
+```
+
+Resolvers:
+
+```text
+/usr/share/wordlists/resolvers/resolvers.txt
+```
 
 ---
+
+# Permissões
+
+Não esqueça de tornar os scripts executáveis:
+
+```bash
+chmod +x recon.sh
+chmod +x vulnscan.sh
+```
+
+---
+
+# Observações
+
+- O brute force DNS é opcional via `--brute`
+- Os resultados são incrementais graças ao `anew`
+- O `notify` pode ser configurado para Discord, Slack, Telegram, etc
+- O `parallel -j 4` controla quantos domínios são processados simultaneamente
+
+---
+
+# Disclaimer
+
+Uso exclusivo para ambientes autorizados e programas de bug bounty.
+````
+
+
 
 ## **Contribuição**
 
