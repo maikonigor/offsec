@@ -10,8 +10,8 @@ Scripts para automação de recon DNS e varredura de vulnerabilidades utilizando
 
 ```text
 bugbounty/
-├── recon.sh
-├── vulnscan.sh
+├── dns_reocn.sh
+├── vuln_recon.sh
 └── README.md
 ```
 
@@ -156,8 +156,8 @@ Resolvers:
 Não esqueça de tornar os scripts executáveis:
 
 ```bash
-chmod +x recon.sh
-chmod +x vulnscan.sh
+chmod +x dns_recon.sh
+chmod +x vuln_recon.sh
 ```
 
 ---
