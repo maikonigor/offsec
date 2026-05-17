@@ -2,7 +2,7 @@
 
 export PATH=$PATH:$HOME/go/bin
 
-BUG_BOUNTY_DIR="~/bugbounty"
+BUG_BOUNTY_DIR="$HOME/bugbounty"
 
 # Verifica se a flag --brute foi passada
 ENABLE_BRUTE=false
