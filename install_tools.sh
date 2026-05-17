@@ -79,6 +79,9 @@ install_go_tools() {
         "github.com/tomnomnom/gf@latest"
         "github.com/tomnomnom/anew@latest"
         "github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest"
+        "github.com/tomnomnom/assetfinder@latest"
+        "github.com/tomnomnom/waybackurls@latest"
+        "github.com/ffuf/ffuf/v2@latest"
     )
     
     for tool in "${tools[@]}"; do
@@ -120,6 +123,12 @@ install_system_tools() {
             sudo apt install -y python3-pip
             pip3 install arjun
         fi
+
+        print_info "instalando parallel"
+        sudo apt install -y parallel
+        
+        print_info "Instalando jq..."
+        sudo apt install -y jq
         
         print_message "Ferramentas de sistema instaladas"
     else
@@ -127,6 +136,7 @@ install_system_tools() {
         print_info "- massdns"
         print_info "- whois"
         print_info "- arjun (via pip)"
+        print_info "- jq"
     fi
     
     # Instalar snap packages
@@ -208,11 +218,15 @@ verify_installations() {
         "gf"
         "anew"
         "nuclei"
+        "assetfinder"
+        "waybackurls"
+        "ffuf"
         "amass"
         "massdns"
         "whois"
         "arjun"
         "dalfox"
+        "jq"
     )
     
     for tool in "${tools[@]}"; do
@@ -222,6 +236,45 @@ verify_installations() {
             print_error "✗ $tool - Não encontrado"
         fi
     done
+}
+
+# Configurar wordlists e resolvers
+setup_wordlists() {
+    print_message "Verificando wordlists e resolvers..."
+    
+    # SecLists
+    if [ ! -d "/usr/share/wordlists/SecLists" ]; then
+        print_warning "SecLists não encontrado em /usr/share/wordlists/SecLists"
+        read -p "Deseja instalar o SecLists? Isso pode demorar e requer sudo. (y/n) " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            print_info "Clonando SecLists..."
+            sudo mkdir -p /usr/share/wordlists
+            sudo git clone https://github.com/danielmiessler/SecLists.git /usr/share/wordlists/SecLists
+            print_message "SecLists instalado com sucesso"
+        else
+            print_warning "SecLists não instalado. Algumas funções podem falhar."
+        fi
+    else
+        print_message "✓ SecLists encontrado"
+    fi
+
+    # Resolvers
+    if [ ! -f "/usr/share/wordlists/resolvers/resolvers.txt" ]; then
+        print_warning "Arquivo de resolvers não encontrado em /usr/share/wordlists/resolvers/resolvers.txt"
+        read -p "Deseja baixar os resolvers do Trickest? (y/n) " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            print_info "Baixando resolvers..."
+            sudo mkdir -p /usr/share/wordlists/resolvers
+            sudo wget -qO /usr/share/wordlists/resolvers/resolvers.txt https://raw.githubusercontent.com/trickest/resolvers/main/resolvers.txt
+            print_message "Resolvers instalados com sucesso"
+        else
+            print_warning "Resolvers não instalados. Algumas funções podem falhar."
+        fi
+    else
+        print_message "✓ Resolvers encontrados"
+    fi
 }
 
 # Atualizar nuclei templates
@@ -249,6 +302,7 @@ main() {
     install_go_tools
     install_system_tools
     setup_gf_templates
+    setup_wordlists
     update_nuclei_templates
     
     # Verificar instalações
