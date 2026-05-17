@@ -2,7 +2,7 @@
 
 export PATH=$PATH:$HOME/go/bin
 
-BUG_BOUNTY_DIR="/home/kali/bugbounty"
+BUG_BOUNTY_DIR="~/bugbounty"
 
 # Verifica se a flag --brute foi passada
 ENABLE_BRUTE=false
