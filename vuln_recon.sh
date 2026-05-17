@@ -1,6 +1,6 @@
 #!/bin/bash
 export PATH=$PATH:$HOME/go/bin
-BUG_BOUNTY_DIR="/home/kali/bugbounty"
+BUG_BOUNTY_DIR="~/bugbounty"
 
 find "$BUG_BOUNTY_DIR" -type f -name "subs.txt" | parallel  -j 4 --bar '
 		SUBS_FILE={}
