@@ -43,6 +43,7 @@ echo "    ├── domains.txt"
 echo "    └── target.com/"
 
 echo "[+] Instaling tools..."
+chmod +x install_tools.sh
 ./install_tools.sh
 
 echo "[+] Setup completed!"
