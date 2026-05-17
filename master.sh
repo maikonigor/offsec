@@ -63,11 +63,11 @@ process_target() {
         mkdir -p "$DOMAIN_DIR"/{logs,recon,scans,temp}
         
         # Executar script de recon para este domínio
-        ./$BUG_BOUNTY_DIR/scripts/domain_recon.sh "$DOMAIN" "$DOMAIN_DIR" "$ENABLE_BRUTE"
+        ./domain_recon.sh "$DOMAIN" "$DOMAIN_DIR" "$ENABLE_BRUTE"
         
         # Executar scan de vulnerabilidades se habilitado
         if [ "$ENABLE_VULN_SCAN" = true ]; then
-            ./$BUG_BOUNTY_DIR/scripts/vuln_scan.sh "$DOMAIN" "$DOMAIN_DIR"
+            ./vuln_scan.sh "$DOMAIN" "$DOMAIN_DIR"
         fi
         
         log "${GREEN}[✓] Completed: $DOMAIN${NC}"
