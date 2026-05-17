@@ -10,7 +10,7 @@ echo "[+] Setting up Bug Bounty directory structure..."
 mkdir -p "$BUG_BOUNTY_DIR/scripts"
 
 # Copiar scripts para o diretório de scripts
-cp *.sh "$BUG_BOUNTY_DIR/scripts/"
+cp master.sh domain_recon.sh vuln_scan.sh "$BUG_BOUNTY_DIR/scripts/"
 chmod +x "$BUG_BOUNTY_DIR/scripts/"*.sh
 
 # Criar arquivo de exemplo de alvo
@@ -43,6 +43,6 @@ echo "    ├── domains.txt"
 echo "    └── target.com/"
 
 echo "[+] Instaling tools..."
-./scripts/install_tools.sh
+./install_tools.sh
 
 echo "[+] Setup completed!"
