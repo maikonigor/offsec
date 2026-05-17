@@ -4,11 +4,13 @@ Este repositório contém uma suíte de scripts de automação projetados para s
 
 ## Estrutura dos Scripts
 
-- `setup.sh`: Script inicial para criar a estrutura de diretórios e copiar todos os scripts.
-- `install_tools.sh`: Instala e configura todas as ferramentas necessárias, pacotes de sistema, templates do Nuclei e wordlists.
-- `master.sh`: Script principal que gerencia e coordena a execução por domínios.
-- `domain_recon.sh`: Executa o reconhecimento passivo/ativo de subdomínios, coleta IPs, verifica portas (HTTP Probe), e extrai endpoints e parâmetros interessantes.
-- `vuln_scan.sh`: Pega os resultados do reconhecimento e realiza fuzzing de diretórios, scan de vulnerabilidades com Nuclei, XSS com Dalfox, e reporta falhas críticas.
+Para facilitar a leitura e o entendimento técnico das frentes de trabalho, uma documentação detalhada sobre as fases e estratégias por trás de cada script foi disponibilizada na pasta `docs/`.
+
+- [`setup.sh`](docs/setup.md): Script inicial para criar a estrutura de diretórios e copiar todos os scripts.
+- [`install_tools.sh`](docs/install_tools.md): Instala e configura todas as ferramentas necessárias, pacotes de sistema, templates do Nuclei e wordlists.
+- [`master.sh`](docs/master.md): Script principal que gerencia e coordena a execução por domínios.
+- [`domain_recon.sh`](docs/domain_recon.md): Executa o reconhecimento passivo/ativo de subdomínios, coleta IPs, verifica portas, e extrai endpoints e parâmetros interessantes.
+- [`vuln_scan.sh`](docs/vuln_scan.md): Pega os resultados do reconhecimento e realiza fuzzing de diretórios, scan de vulnerabilidades com Nuclei, XSS com Dalfox, e reporta falhas críticas.
 
 ---
 
@@ -129,6 +131,18 @@ Para receber essas notificações diretamente no seu **Discord**, siga o tutoria
    ```
 
 4. **Pronto!** Na próxima vez que o Nuclei encontrar algo "Crítico" ou "Alto", o `vuln_scan.sh` enviará a falha para o seu Discord em tempo real.
+
+---
+
+## Documentação Detalhada dos Scripts
+
+Consulte as seções abaixo para uma análise profunda de cada script, suas fases de escaneamento, e lógica interna:
+
+* [Documentação do `setup.sh`](docs/setup.md)
+* [Documentação do `install_tools.sh`](docs/install_tools.md)
+* [Documentação do `master.sh`](docs/master.md)
+* [Documentação do `domain_recon.sh`](docs/domain_recon.md)
+* [Documentação do `vuln_scan.sh`](docs/vuln_scan.md)
 
 ---
 
