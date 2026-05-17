@@ -106,9 +106,20 @@ install_system_tools() {
         # Atualizar pacotes
         sudo apt update
         
-        # Instalar massdns e dependências
+        # Instalar massdns e dependências a partir do código fonte
         print_info "Instalando massdns..."
-        sudo apt install -y massdns
+        sudo apt install -y build-essential git
+        if ! command -v massdns &> /dev/null; then
+            cd /tmp
+            git clone https://github.com/blechschmidt/massdns.git
+            cd massdns
+            make
+            sudo cp bin/massdns /usr/local/bin/
+            cd - > /dev/null
+            rm -rf /tmp/massdns
+        else
+            print_info "massdns já está instalado."
+        fi
         
         # Instalar whois
         print_info "Instalando whois..."
