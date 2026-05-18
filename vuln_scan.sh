@@ -29,32 +29,32 @@ log "[1/4] Running nuclei scans..."
 if command -v nuclei &> /dev/null; then
     # Critical e High
     log "[*] Scanning critical/high vulnerabilities..."
-    nuclei -l "$ALIVE_FILE" \
-        -severity critical,high \
-        -silent \
-        -stats \
-        -o "$NUCLEI_DIR/critical_high.txt"
+    if command -v notify &> /dev/null; then
+        nuclei -l "$ALIVE_FILE" -severity critical,high -silent -stats | tee "$NUCLEI_DIR/critical_high.txt" | notify -silent -id vulns 2>/dev/null
+    else
+        nuclei -l "$ALIVE_FILE" -severity critical,high -silent -stats -o "$NUCLEI_DIR/critical_high.txt"
+    fi
     
     # Medium e Low
-    log "[*] Scanning medium/low vulnerabilities..."
-    nuclei -l "$ALIVE_FILE" \
-        -severity medium,low \
-        -silent \
-        -o "$NUCLEI_DIR/medium_low.txt"
+    # log "[*] Scanning medium/low vulnerabilities..."
+    # nuclei -l "$ALIVE_FILE" \
+    #     -severity medium,low \
+    #     -silent \
+    #     -o "$NUCLEI_DIR/medium_low.txt"
     
-    # Misconfigurations
-    log "[*] Scanning misconfigurations..."
-    nuclei -l "$ALIVE_FILE" \
-        -tags misconfig \
-        -silent \
-        -o "$NUCLEI_DIR/misconfigs.txt"
+    # # Misconfigurations
+    # log "[*] Scanning misconfigurations..."
+    # nuclei -l "$ALIVE_FILE" \
+    #     -tags misconfig \
+    #     -silent \
+    #     -o "$NUCLEI_DIR/misconfigs.txt"
     
-    # Exposure (open redirect, etc)
-    log "[*] Scanning exposures..."
-    nuclei -l "$ALIVE_FILE" \
-        -tags exposure \
-        -silent \
-        -o "$NUCLEI_DIR/exposures.txt"
+    # # Exposure (open redirect, etc)
+    # log "[*] Scanning exposures..."
+    # nuclei -l "$ALIVE_FILE" \
+    #     -tags exposure \
+    #     -silent \
+    #     -o "$NUCLEI_DIR/exposures.txt"
     
     # Count findings
     CRIT_COUNT=$(wc -l < "$NUCLEI_DIR/critical_high.txt" 2>/dev/null || echo "0")
@@ -64,20 +64,29 @@ else
 fi
 
 # 2. XSS Scanning com Dalfox
-log "[2/4] XSS scanning with dalfox..."
+log "[2/4] XSS scanning with gf and dalfox..."
+
+
 
 if command -v dalfox &> /dev/null && [ -f "$PARAMS_FILE" ] && [ -s "$PARAMS_FILE" ]; then
     log "[*] Running dalfox on parameter endpoints..."
     
     # Pegar URLs com parâmetros
     grep -E '\?.*=' "$URLS_FILE" | head -100 > "$DOMAIN_DIR/urls_with_params.txt"
+
+    # buscar urls com xss e preparar para o dalfox
+    if command -v gf &> /dev/null; then
+        cat "$DOMAIN_DIR/urls_with_params.txt"| gf xss | anew "$DOMAIN_DIR/xss.txt"
+    else
+        log "[*] gf not found, skipping XSS detection"
+    fi
     
-    if [ -s "$DOMAIN_DIR/urls_with_params.txt" ]; then
-        dalfox file "$DOMAIN_DIR/urls_with_params.txt" \
-            --silent \
-            --only-poc \
-            --timeout 10 \
-            -o "$DOMAIN_DIR/dalfox_results.txt" 2>/dev/null
+    if [ -s "$DOMAIN_DIR/xss.txt" ]; then
+        if command -v notify &> /dev/null; then
+            dalfox file "$DOMAIN_DIR/xss.txt" --silent --only-poc --timeout 10 | tee "$DOMAIN_DIR/dalfox_results.txt" | notify -silent -id vulns 2>/dev/null
+        else
+            dalfox file "$DOMAIN_DIR/xss.txt" --silent --only-poc --timeout 10 -o "$DOMAIN_DIR/dalfox_results.txt" 2>/dev/null
+        fi
         
         XSS_COUNT=$(wc -l < "$DOMAIN_DIR/dalfox_results.txt" 2>/dev/null || echo "0")
         log "[✓] Found $XSS_COUNT potential XSS"
@@ -116,15 +125,6 @@ if command -v ffuf &> /dev/null; then
     log "[✓] Found $DIR_COUNT directories"
 fi
 
-# 4. Notificações (se houver findings críticos)
-log "[4/4] Sending notifications..."
-
-if command -v notify &> /dev/null; then
-    if [ -f "$NUCLEI_DIR/critical_high.txt" ] && [ -s "$NUCLEI_DIR/critical_high.txt" ]; then
-        log "[!] Critical findings detected! Sending notification..."
-        cat "$NUCLEI_DIR/critical_high.txt" | notify -silent -id vulns 2>/dev/null
-    fi
-fi
 
 # Criar relatório consolidado
 cat > "$DOMAIN_DIR/VULN_REPORT.md" << EOF
