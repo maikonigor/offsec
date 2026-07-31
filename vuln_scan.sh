@@ -31,8 +31,10 @@ if command -v nuclei &> /dev/null; then
     log "[*] Scanning critical/high vulnerabilities..."
     if command -v notify &> /dev/null; then
         nuclei -l "$ALIVE_FILE" -severity critical,high -silent -stats | tee "$NUCLEI_DIR/critical_high.txt" | notify -silent -id vulns 2>/dev/null
+        nuclei -l "$ALIVE_FILE" -t swagger-detect.yaml -silent | tee "$NUCLEI_DIR/critical_high.txt" | notify -silent -id vulns 2>/dev/null
     else
         nuclei -l "$ALIVE_FILE" -severity critical,high -silent -stats -o "$NUCLEI_DIR/critical_high.txt"
+        nuclei -l "$ALIVE_FILE" -t swagger-detect.yaml -silent -stats | tee "$NUCLEI_DIR/medium_low.txt"
     fi
     
     # Medium e Low
